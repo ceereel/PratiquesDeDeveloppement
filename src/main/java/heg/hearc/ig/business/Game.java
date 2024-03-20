@@ -1,24 +1,31 @@
+package heg.hearc.ig.business;
+
 public class Game {
-    private int[] rolls = new int[21]; // 21 lancers sont le maximum possible
+    private int[] rolls = new int[21]; // 21 lancers sont le maximum possible dans un jeu de bowling
     private int currentRoll = 0;
 
     public void roll(int pins) {
-        rolls[currentRoll++] = pins;
+        // Vérifie que nous ne dépassons pas la capacité du tableau
+        if (currentRoll < rolls.length) {
+            rolls[currentRoll++] = pins;
+        } else {
+            System.out.println("Tentative d'ajouter plus de lancers que prévu.");
+        }
     }
 
     public int score() {
         int score = 0;
         int frameIndex = 0;
         for (int frame = 0; frame < 10; frame++) {
-            if (isStrike(frameIndex)) { // Strike
+            if (isStrike(frameIndex)) { // Vérification d'un strike
                 score += 10 + strikeBonus(frameIndex);
-                frameIndex++;
-            } else if (isSpare(frameIndex)) { // Spare
+                frameIndex++; // Avance d'un lancer car le strike n'occupe qu'une case dans le tableau
+            } else if (isSpare(frameIndex)) { // Vérification d'un spare
                 score += 10 + spareBonus(frameIndex);
-                frameIndex += 2;
+                frameIndex += 2; // Avance de deux lancers car le spare occupe deux cases
             } else {
                 score += sumOfBallsInFrame(frameIndex);
-                frameIndex += 2;
+                frameIndex += 2; // Avance de deux lancers dans le cas général
             }
         }
         return score;
@@ -42,36 +49,5 @@ public class Game {
 
     private int strikeBonus(int frameIndex) {
         return rolls[frameIndex + 1] + rolls[frameIndex + 2];
-    }
-
-    // Méthode principale pour tester la classe Game
-    public static void main(String[] args) {
-        System.out.println("Début de la démonstration de la classe Game:");
-
-        // Définition des scénarios de test
-        int[][] scenarios = {
-                {0, 20}, // Tous zéros
-                {1, 20}, // Tous uns
-                {5, 5, 3, 17, 0}, // Un spare
-                {10, 3, 4, 16, 0}, // Un strike
-                {10, 12} // Jeu parfait
-        };
-
-        // Exécution des scénarios de test
-        for (int i = 0; i < scenarios.length; i++) {
-            Game game = new Game();
-            for (int j = 0; j < scenarios[i].length; j += 2) {
-                int pins = scenarios[i][j];
-                int rolls = scenarios[i][j + 1];
-                rollMany(game, rolls, pins);
-            }
-            System.out.println("Scénario " + (i + 1) + ": " + game.score());
-        }
-    }
-
-    private static void rollMany(Game game, int rolls, int pins) {
-        for (int i = 0; i < rolls; i++) {
-            game.roll(pins);
-        }
     }
 }

@@ -1,3 +1,5 @@
+import heg.hearc.ig.business.Game;
+
 import org.junit.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
